@@ -1,7 +1,7 @@
 // app/success/page.tsx
 
 import { Suspense } from "react";
-import SuccessClient from "@/components/SuccesClient";
+import SuccessClient from "../../components/SuccesClient";
 
 // LET OP: Geen "use client" hier. Dit is een server component.
 
