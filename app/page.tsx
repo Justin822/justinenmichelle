@@ -3,6 +3,8 @@ import JM from "@/public/jenm.jpg";
 import GiftCard from "@/components/GiftCard";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const gifts = await prisma.gift.findMany();
 
