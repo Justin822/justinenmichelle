@@ -7,6 +7,8 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
+export const dynamic = "force-dynamic";
+
 interface SessionData {
   id: string;
   amount_total: number;
