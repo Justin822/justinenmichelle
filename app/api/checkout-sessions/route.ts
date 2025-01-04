@@ -36,6 +36,13 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ sessionId: session.id });
   } catch (error: unknown) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+    // Als je niet weet wat het is, geef een generieke melding terug
+    return NextResponse.json(
+      { error: "An unknown error occurred" },
+      { status: 400 }
+    );
   }
 }

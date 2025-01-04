@@ -7,11 +7,19 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
+interface SessionData {
+  id: string;
+  amount_total: number;
+  // evt. andere velden:
+  // payment_status?: string;
+  // metadata?: { [key: string]: any };
+}
+
 export default function SuccessPage() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session_id");
   const [loading, setLoading] = useState(true);
-  const [sessionData, setSessionData] = useState<unknown>(null);
+  const [sessionData, setSessionData] = useState<SessionData | null>(null);
 
   useEffect(() => {
     if (sessionId) {

@@ -26,8 +26,15 @@ export async function POST(req: NextRequest) {
       signature!,
       process.env.STRIPE_WEBHOOK_SECRET!
     );
-  } catch (err: unknown) {
-    return NextResponse.json({ error: err.message }, { status: 400 });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+    // Als je niet weet wat het is, geef een generieke melding terug
+    return NextResponse.json(
+      { error: "An unknown error occurred" },
+      { status: 400 }
+    );
   }
 
   if (event.type === "checkout.session.completed") {
