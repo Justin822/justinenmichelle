@@ -11,7 +11,7 @@ export default function SuccessPage() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session_id");
   const [loading, setLoading] = useState(true);
-  const [sessionData, setSessionData] = useState<any>(null);
+  const [sessionData, setSessionData] = useState<unknown>(null);
 
   useEffect(() => {
     if (sessionId) {
