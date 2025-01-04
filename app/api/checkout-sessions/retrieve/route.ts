@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
       expand: ["line_items.data.price.product"],
     });
     return NextResponse.json({ session });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return NextResponse.json({ error: error.message }, { status: 400 });
   }
 }
