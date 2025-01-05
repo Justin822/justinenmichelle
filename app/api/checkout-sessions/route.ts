@@ -26,20 +26,7 @@ export async function POST(request: NextRequest) {
           quantity: 1,
         },
       ],
-      custom_fields: [
-        {
-          key: "engraving",
-          label: {
-            type: "custom",
-            custom: "Personalized engraving",
-          },
-          optional: false,
-          type: "text",
-          text: {
-            value: "Jane",
-          },
-        },
-      ],
+
       mode: "payment",
       success_url: `${returnUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${returnUrl}/cancel`,
