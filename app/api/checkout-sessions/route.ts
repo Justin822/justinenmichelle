@@ -35,16 +35,16 @@ export async function POST(request: NextRequest) {
       },
       custom_fields: [
         {
-          key: "name",
+          key: "engraving",
           label: {
             type: "custom",
-            custom: "Your Name",
+            custom: "Personalized engraving",
           },
+          optional: false,
           type: "text",
           text: {
-            placeholder: "Enter your name", // Correct structure for placeholder
+            value: "Jane",
           },
-          required: true,
         },
       ],
     });
