@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
           messages: {
             create: {
               message,
-              email,
+              email: email || "unknown@example.com", // Fallback value if email is null
               name,
             },
           },
