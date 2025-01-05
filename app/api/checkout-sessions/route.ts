@@ -33,6 +33,20 @@ export async function POST(request: NextRequest) {
         giftId: String(giftId), // <-- Opslaan in metadata
         message: message ?? "",
       },
+      custom_fields: [
+        {
+          key: "name",
+          label: {
+            type: "custom",
+            custom: "Naam",
+          },
+          type: "text",
+          text: {
+            placeholder: "Vul hier je naam in",
+          },
+          required: true,
+        },
+      ],
     });
 
     return NextResponse.json({ sessionId: session.id });
