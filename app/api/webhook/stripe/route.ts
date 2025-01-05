@@ -45,6 +45,8 @@ export async function POST(req: NextRequest) {
     const name = session.customer_details?.name || "";
     const amount = session.amount_total ?? 0; // Amount in cents
 
+    console.log("Stripe session:", session);
+
     if (giftIdString) {
       const giftId = parseInt(giftIdString, 10);
       // Save the payment details to the database
