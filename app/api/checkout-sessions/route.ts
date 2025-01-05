@@ -8,7 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 
 export async function POST(request: NextRequest) {
   try {
-    const { chosenAmount, giftId, returnUrl } = await request.json();
+    const { chosenAmount, giftId, message, returnUrl } = await request.json();
     const amountInCents = chosenAmount * 100;
 
     // Maak checkout session
@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
       cancel_url: `${returnUrl}/cancel`,
       metadata: {
         giftId: String(giftId), // <-- Opslaan in metadata
+        message: message ?? "",
       },
     });
 

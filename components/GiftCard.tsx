@@ -9,6 +9,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
+
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
@@ -35,18 +44,19 @@ export default function GiftCard({
   max,
   paid,
 }: GiftCardProps) {
-  const [amount, setAmount] = useState<number>(0);
+  const [open, setOpen] = useState(false); // of type boolean
+  const [amount, setAmount] = useState<number>(0); // user kiest bedrag op de kaart
+  const [message, setMessage] = useState<string>(""); // user voegt bericht toe in drawer
 
   const isFullyPaid = paid >= max;
 
-  // Deze functie wordt aangeroepen als men op "Kies cadeau" klikt
+  // Deze functie wordt aangeroepen als men definitief naar Stripe wil
   async function handleCheckout() {
     try {
-      if (isFullyPaid) {
-        // Cadeau is al volledig betaald, evt. een melding geven en return
+      if (isFullyPaid || amount <= 0) {
+        // Geen betaling mogelijk of bedrag te laag
         return;
       }
-
       const stripe = await stripePromise;
       const response = await fetch("/api/checkout-sessions", {
         method: "POST",
@@ -54,8 +64,9 @@ export default function GiftCard({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          chosenAmount: amount, // ingevoerde bedrag
+          chosenAmount: amount, // ingevoerde bedrag (vanaf de kaart)
           giftId: id, // welk cadeau
+          message, // persoonlijke boodschap uit de drawer
           returnUrl: window.location.origin,
         }),
       });
@@ -70,6 +81,22 @@ export default function GiftCard({
     } catch (error) {
       console.error("Fout bij aanmaken Checkout Session:", error);
     }
+  }
+
+  // Toon drawer alleen als er een bedrag is ingevuld
+  function openDrawer() {
+    if (!isFullyPaid && amount > 0) {
+      setOpen(true);
+    } else {
+      // Eventueel feedback geven als men 0 bedrag heeft geselecteerd
+      console.log("Kies eerst een geldig bedrag > 0");
+    }
+  }
+
+  // Sluit drawer en ga naar checkout
+  function handleDrawerCheckout() {
+    setOpen(false);
+    handleCheckout();
   }
 
   return (
@@ -117,9 +144,9 @@ export default function GiftCard({
             Volledig betaald
           </Button>
         ) : (
-          // Anders de "Kies cadeau"-knop
+          // Anders de "Kies cadeau"-knop -> opent Drawer
           <Button
-            onClick={handleCheckout}
+            onClick={openDrawer}
             className="rounded-full bg-rose-600 hover:bg-rose-700"
           >
             <Heart className="mr-2 h-4 w-4" />
@@ -127,6 +154,40 @@ export default function GiftCard({
           </Button>
         )}
       </CardFooter>
+
+      {/* DRAWER: enkel als nog niet fully paid */}
+      <Drawer open={open} onOpenChange={setOpen}>
+        {/* Overlay + Drawer Content */}
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>Persoonlijk bericht</DrawerTitle>
+            <DrawerDescription>
+              Voeg een bericht toe voor de bruiloft
+            </DrawerDescription>
+          </DrawerHeader>
+
+          <div className="grid gap-4 py-4">
+            <label>
+              Je bericht:
+              <textarea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                className="border p-2 rounded w-full"
+                rows={3}
+              />
+            </label>
+          </div>
+
+          <DrawerFooter>
+            <Button variant="outline" onClick={() => setOpen(false)}>
+              Annuleren
+            </Button>
+            <Button onClick={handleDrawerCheckout}>
+              Doorgaan naar betaling
+            </Button>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </Card>
   );
 }

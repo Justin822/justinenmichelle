@@ -42,6 +42,8 @@ export async function POST(req: NextRequest) {
 
     // Haal giftId uit metadata
     const giftIdString = session.metadata?.giftId;
+    // Haal message uit metadata
+    const message = session.metadata?.message ?? "";
     // Betaalbedrag in centen
     const amount = session.amount_total ?? 0;
 
@@ -53,6 +55,9 @@ export async function POST(req: NextRequest) {
         data: {
           totalPaidCents: {
             increment: amount,
+          },
+          messages: {
+            create: { message },
           },
         },
       });
