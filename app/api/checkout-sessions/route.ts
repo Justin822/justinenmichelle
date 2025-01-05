@@ -26,13 +26,6 @@ export async function POST(request: NextRequest) {
           quantity: 1,
         },
       ],
-      mode: "payment",
-      success_url: `${returnUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${returnUrl}/cancel`,
-      metadata: {
-        giftId: String(giftId), // <-- Opslaan in metadata
-        message: message ?? "",
-      },
       custom_fields: [
         {
           key: "engraving",
@@ -47,6 +40,13 @@ export async function POST(request: NextRequest) {
           },
         },
       ],
+      mode: "payment",
+      success_url: `${returnUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${returnUrl}/cancel`,
+      metadata: {
+        giftId: String(giftId), // <-- Opslaan in metadata
+        message: message ?? "",
+      },
     });
 
     return NextResponse.json({ sessionId: session.id });
