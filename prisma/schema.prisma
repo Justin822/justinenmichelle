@@ -23,6 +23,16 @@ model Gift {
   maxCents       Int
   totalPaidCents Int     @default(0)
   image          String?
+  messages       GiftMessage[]
   
   // optioneel: createdAt / updatedAt
+}
+
+model GiftMessage {
+  id        Int      @id @default(autoincrement())
+  giftId    Int
+  message   String
+  createdAt DateTime @default(now())
+
+  gift      Gift     @relation(fields: [giftId], references: [id])
 }
