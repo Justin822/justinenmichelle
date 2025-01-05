@@ -38,11 +38,11 @@ export async function POST(request: NextRequest) {
           key: "name",
           label: {
             type: "custom",
-            custom: "Naam",
+            custom: "Your Name",
           },
           type: "text",
           text: {
-            placeholder: "Vul je naam in", // Correct structure for placeholder
+            placeholder: "Enter your name", // Correct structure for placeholder
           },
           required: true,
         },
