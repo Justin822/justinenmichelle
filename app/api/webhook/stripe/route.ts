@@ -56,7 +56,9 @@ export async function POST(req: NextRequest) {
           totalPaidCents: {
             increment: amount,
           },
-          message: message,
+          messages: {
+            create: { message },
+          },
         },
       });
       console.log(`Cadeau #${giftId} is +${amount} cent bijgewerkt!`);
