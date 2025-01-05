@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
     // Retrieve the metadata and session fields
     const giftIdString = session.metadata?.giftId;
     const message = session.metadata?.message ?? "";
-    const email = session.customer_email; // Customer's email
+    const email = session.customer_details?.email; // Customer's email
     const name = session.customer_details?.name || "";
     const amount = session.amount_total ?? 0; // Amount in cents
 
