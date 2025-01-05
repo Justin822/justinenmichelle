@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
           },
           type: "text",
           text: {
-            placeholder: "Vul hier je naam in",
+            placeholder: "Vul je naam in", // Correct structure for placeholder
           },
           required: true,
         },
