@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import { prisma, Gift } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 import formData from "form-data";
 import Mailgun from "mailgun.js";
 
@@ -100,7 +100,7 @@ async function sendEmailNotification({
   name,
   amount,
 }: {
-  gift: Gift;
+  gift: { title: string; totalPaidCents: number; maxCents: number };
   message: string;
   email: string;
   name: string;
