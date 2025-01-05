@@ -1,4 +1,3 @@
-// app/api/webhook/stripe/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
@@ -30,7 +29,6 @@ export async function POST(req: NextRequest) {
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
-    // Als je niet weet wat het is, geef een generieke melding terug
     return NextResponse.json(
       { error: "An unknown error occurred" },
       { status: 400 }
@@ -40,16 +38,16 @@ export async function POST(req: NextRequest) {
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
 
-    // Haal giftId uit metadata
+    // Retrieve the metadata and session fields
     const giftIdString = session.metadata?.giftId;
-    // Haal message uit metadata
     const message = session.metadata?.message ?? "";
-    // Betaalbedrag in centen
-    const amount = session.amount_total ?? 0;
+    const email = session.customer_email; // Customer's email
+    const name = session.shipping?.name || session.customer_details?.name || ""; // Name from Stripe session
+    const amount = session.amount_total ?? 0; // Amount in cents
 
     if (giftIdString) {
       const giftId = parseInt(giftIdString, 10);
-      // Prisma-update: giftId -> totalPaidCents + amount
+      // Save the payment details to the database
       await prisma.gift.update({
         where: { id: giftId },
         data: {
@@ -57,11 +55,15 @@ export async function POST(req: NextRequest) {
             increment: amount,
           },
           messages: {
-            create: { message },
+            create: {
+              message,
+              email,
+              name,
+            },
           },
         },
       });
-      console.log(`Cadeau #${giftId} is +${amount} cent bijgewerkt!`);
+      console.log(`Cadeau #${giftId} updated with +${amount} cents.`);
     }
   }
 

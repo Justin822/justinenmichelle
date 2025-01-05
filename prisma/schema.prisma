@@ -33,6 +33,8 @@ model GiftMessage {
   giftId    Int
   message   String
   createdAt DateTime @default(now())
+  name      String   // Add name field to store customer's name
+  email     String   // Add email field to store customer's email
 
   gift      Gift     @relation(fields: [giftId], references: [id])
 }
