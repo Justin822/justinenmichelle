@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
-import formData from "form-data";
-import Mailgun from "mailgun.js";
 
 export const config = {
   api: {
@@ -12,14 +10,6 @@ export const config = {
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2024-12-18.acacia",
-});
-
-// Setup Mailgun client
-const mailgun = new Mailgun(formData);
-const mailgunClient = mailgun.client({
-  username: "api",
-  key: process.env.MAILGUN_API_KEY!,
-  url: process.env.MAILGUN_API_URL || "https://api.mailgun.net",
 });
 
 export async function POST(req: NextRequest) {
@@ -77,60 +67,8 @@ export async function POST(req: NextRequest) {
       });
 
       console.log(`Gift #${giftId} updated successfully!`);
-
-      // Send email notification
-      await sendEmailNotification({
-        gift,
-        message,
-        email,
-        name,
-        amount,
-      });
     }
   }
 
   return NextResponse.json({ received: true }, { status: 200 });
-}
-
-// Email sending function using Mailgun
-async function sendEmailNotification({
-  gift,
-  message,
-  email,
-  name,
-  amount,
-}: {
-  gift: { title: string; totalPaidCents: number; maxCents: number };
-  message: string;
-  email: string;
-  name: string;
-  amount: number;
-}) {
-  try {
-    const response = await mailgunClient.messages.create(
-      process.env.MAILGUN_DOMAIN!,
-      {
-        from: process.env.MAILGUN_FROM!,
-        to: process.env.MAILGUN_TO!, // Your email
-        subject: `New Gift Contribution for "${gift.title}"`,
-        html: `
-          <h1>New Gift Contribution</h1>
-          <p><strong>Gift:</strong> ${gift.title}</p>
-          <p><strong>Amount Paid:</strong> €${(amount / 100).toFixed(2)}</p>
-          <p><strong>From:</strong> ${name}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Message:</strong> ${message}</p>
-          <hr />
-          <p>Total Paid for "${gift.title}": €${(
-          gift.totalPaidCents / 100
-        ).toFixed(2)}</p>
-          <p>Goal: €${(gift.maxCents / 100).toFixed(2)}</p>
-        `,
-      }
-    );
-
-    console.log("Email sent successfully!", response.id);
-  } catch (error) {
-    console.error("Error sending email:", error);
-  }
 }
