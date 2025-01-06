@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
       await resend.emails.send({
         from: "Justin Kuijpers <justin@justinenmichelle.nl>",
         to: "justin@justinkuijpers.com",
-        subject: `New Gift Contribution for "${gift.title}"`,
+        subject: `Nieuw cadeau gegeven voor ${gift.title}`,
         react: NotificationEmail({
           giftTitle: gift.title,
           message,

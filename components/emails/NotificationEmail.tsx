@@ -29,29 +29,29 @@ export default function NotificationEmail({
   return (
     <Html>
       <Head />
-      <Preview>New gift contribution notification</Preview>
+      <Preview>Nieuw cadeau ontvangen</Preview>
       <Body style={{ fontFamily: "Arial, sans-serif" }}>
         <Container>
-          <Heading>New Gift Contribution</Heading>
+          <Heading>Nieuw cadeau ontvangen</Heading>
           <Text>
-            <strong>Gift:</strong> {giftTitle}
+            <strong>Cadeau:</strong> {giftTitle}
           </Text>
           <Text>
-            <strong>Amount Paid:</strong> €{(amountPaid / 100).toFixed(2)}
+            <strong>Bedrag betaald:</strong> €{(amountPaid / 100).toFixed(2)}
           </Text>
           <Text>
-            <strong>From:</strong> {name}
+            <strong>Van:</strong> {name}
           </Text>
           <Text>
             <strong>Email:</strong> {email}
           </Text>
           <Text>
-            <strong>Message:</strong> {message}
+            <strong>Persoonlijk bericht:</strong> {message}
           </Text>
           <hr />
           <Text>
-            <strong>Total Paid:</strong> €{(totalPaid / 100).toFixed(2)} / €
-            {(goalAmount / 100).toFixed(2)}
+            <strong>Eindtotaal cadeau:</strong> €{(totalPaid / 100).toFixed(2)}{" "}
+            / €{(goalAmount / 100).toFixed(2)}
           </Text>
         </Container>
       </Body>
