@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
+import { Resend } from "resend";
+import NotificationEmail from "@/components/emails/NotificationEmail";
 
 export const config = {
   api: {
@@ -11,6 +13,8 @@ export const config = {
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2024-12-18.acacia",
 });
+
+const resend = new Resend(process.env.RESEND_API_KEY!);
 
 export async function POST(req: NextRequest) {
   const signature = req.headers.get("stripe-signature");
@@ -67,6 +71,22 @@ export async function POST(req: NextRequest) {
       });
 
       console.log(`Gift #${giftId} updated successfully!`);
+
+      // Send email notification using Resend
+      await resend.emails.send({
+        from: "Justin Kuijpers <justin@justinenmichelle.nl>",
+        to: "justin@justinkuijpers.com",
+        subject: `New Gift Contribution for "${gift.title}"`,
+        react: NotificationEmail({
+          giftTitle: gift.title,
+          message,
+          name,
+          email,
+          amountPaid: amount,
+          totalPaid: gift.totalPaidCents,
+          goalAmount: gift.maxCents,
+        }),
+      });
     }
   }
 
